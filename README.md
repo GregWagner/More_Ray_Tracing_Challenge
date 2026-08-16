@@ -1,15 +1,53 @@
-Test coverage locally on GCC:
-Run a Debug build locally with coverage enabled:
-Bash
-cmake -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
-cmake --build build
-ctest --test-dir build --output-on-failure
+# Ray Tracer Challenge (C++17)
 
-Generate local HTML report:
-Convert raw .gcda profile data into a browsable HTML report:
-Base
-lcov --capture --directory build --output-file coverage.info
-lcov --remove coverage.info '/usr/_' '_/\_deps/_' '_/test_main.cpp' --output-file coverage.filtered.info
-genhtml coverage.filtered.info --output-directory coverage_html
+Project for implementing the exercises from _The Ray Tracer Challenge_ using modern C++ and CMake.
 
-Open coverage_html/index.html in your browser to inspect line-by-line coverage.
+### Build With Ninja (from the build directory)
+
+```bash
+cmake -S .. -G Ninja
+cmake --build .
+```
+
+## Run
+
+```bash
+./build/raytracer
+```
+
+## Build and Run Tests (from the build directory)
+
+```bash
+cmake -S .. -DRAYTRACER_BUILD_TESTS=ON -G Ninja
+cmake --build .
+ctest --test-dir .
+```
+
+## BDD-style Tests (Catch2)
+
+This project uses Catch2 for testing. You can write BDD-style tests using Catch2's `SCENARIO`/`GIVEN`/`WHEN`/`THEN` macros.
+
+Example test (put in `tests/`):
+
+```cpp
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_approx.hpp>
+#include "lib/tuple.h"
+
+using namespace rtc;
+using Catch::Approx;
+
+SCENARIO("Magnitude and normalization", "[tuple][bdd]") {
+	GIVEN("a vector (1,2,3)") {
+		Tuple v = Tuple::vector(1, 2, 3);
+
+		WHEN("magnitude is computed") {
+			THEN("it equals sqrt(14)") {
+				REQUIRE(magnitude(v) == Approx(std::sqrt(14.0)));
+			}
+		}
+	}
+}
+```
+
+Run the tests from the `build` directory as shown above. Catch2's output will display each `SCENARIO` as a separate test.

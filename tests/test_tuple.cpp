@@ -10,48 +10,33 @@ SCENARIO("A tuple with w = 1.0 is a point", "[tuple][bdd]") {
     GIVEN("a <- tuple(4.3, -4.2, 3.1, 1.0)") {
         Tuple a(4.3, -4.2, 3.1, 1.0);
 
-        THEN("a.x == 4.3") {
-            REQUIRE(a.x_value == Approx(4.3));
+        THEN("the coordinates match the input values") {
+            CHECK(a.x_value == Approx(4.3));
+            CHECK(a.y_value == Approx(-4.2));
+            CHECK(a.z_value == Approx(3.1));
+            CHECK(a.w_value == Approx(1.0));
         }
-        THEN("a.y == -4.2") {
-            REQUIRE(a.y_value == Approx(-4.2));
-        }
-        THEN("a.z == 3.1") {
-            REQUIRE(a.z_value == Approx(3.1));
-        }
-        THEN("a.w == 1.0") {
-            REQUIRE(a.w_value == Approx(1.0));
-        }
-        THEN("a is a point") {
-            REQUIRE(a.is_point());
-        }
-        THEN("a is not a vector") {
-            REQUIRE_FALSE(a.is_vector());
+        THEN("it is classified as a point") {
+            CHECK(a.is_point());
+            CHECK_FALSE(a.is_vector());
         }
     }
 }
+
 
 SCENARIO("A tuple with w = 0 is a vector", "[tuple][bdd]") {
     GIVEN("a <- typle(4.3, -4.2, 3.1, 1.0)") {
         Tuple a(4.3, -4.2, 3.1, 0.0);
 
-        THEN("a.x == 4.3") {
-            REQUIRE(a.x_value == Approx(4.3));
+        THEN("the coordinates match the input values") {
+            CHECK(a.x_value == Approx(4.3));
+            CHECK(a.y_value == Approx(-4.2));
+            CHECK(a.z_value == Approx(3.1));
+            CHECK(a.w_value == Approx(0.0));
         }
-        THEN("a.y == -4.2") {
-            REQUIRE(a.y_value == Approx(-4.2));
-        }
-        THEN("a.z == 3.1") {
-            REQUIRE(a.z_value == Approx(3.1));
-        }
-        THEN("a.w == 0.0") {
-            REQUIRE(a.w_value == Approx(0));
-        }
-        THEN("a is not a point") {
-            REQUIRE_FALSE(a.is_point());
-        }
-        THEN("a is not a vector") {
-            REQUIRE(a.is_vector());
+        THEN("it is classified as a vector") {
+            CHECK_FALSE(a.is_point());
+            CHECK(a.is_vector());
         }
     }
 }
