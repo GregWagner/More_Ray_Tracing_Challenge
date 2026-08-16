@@ -1,4 +1,5 @@
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} main.cpp
+        lib/tuple.hpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_options(${PROJECT_NAME} PRIVATE ${STRICT_WARNING_FLAGS})
