@@ -1,0 +1,4 @@
+rm -rf build
+cmake -B build -DENABLE_COVERAGE=ON
+cmake --build build
+ctest --test-dir build --output-on-failure

@@ -1,0 +1,15 @@
+Test coverage locally on GCC:
+Run a Debug build locally with coverage enabled:
+Bash
+cmake -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
+cmake --build build
+ctest --test-dir build --output-on-failure
+
+Generate local HTML report:
+Convert raw .gcda profile data into a browsable HTML report:
+Base
+lcov --capture --directory build --output-file coverage.info
+lcov --remove coverage.info '/usr/_' '_/\_deps/_' '_/test_main.cpp' --output-file coverage.filtered.info
+genhtml coverage.filtered.info --output-directory coverage_html
+
+Open coverage_html/index.html in your browser to inspect line-by-line coverage.
