@@ -61,6 +61,10 @@ namespace rtc {
             };
         }
 
+        Tuple operator-() const {
+            return Tuple{-x_value, -y_value, -z_value, -w_value};
+        }
+
         Tuple operator*(double scalar) const {
             return Tuple{
                 x_value * scalar,

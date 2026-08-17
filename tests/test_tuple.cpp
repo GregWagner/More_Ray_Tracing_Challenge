@@ -23,7 +23,7 @@ SCENARIO("A tuple with w = 1.0 is a point", "[tuple][bdd]") {
 }
 
 SCENARIO("A tuple with w = 0 is a vector", "[tuple][bdd]") {
-    GIVEN("a <- tuple(3.3, -4.2, 3.1, 0.0)") {
+    GIVEN("a <- tuple(4.3, -4.2, 3.1, 0.0)") {
         Tuple a(4.3, -4.2, 3.1, 0.0);
         THEN("the coordinates match the input values") {
             CHECK(a.x_value == Approx(4.3));
@@ -41,7 +41,7 @@ SCENARIO("A tuple with w = 0 is a vector", "[tuple][bdd]") {
 SCENARIO("point() creates tuples with w=1", "[tuple][bdd]") {
     GIVEN("p <- point(4, -4, 3)") {
         auto p = Tuple::point(4, -4, 3);
-        THEN("p = tuple(4, -4, 3, 1") {
+        THEN("p = tuple(4, -4, 3, 1)") {
             CHECK(p == Tuple(4, -4, 3, 1));
         }
     }
@@ -50,7 +50,7 @@ SCENARIO("point() creates tuples with w=1", "[tuple][bdd]") {
 SCENARIO("vector() creates tuples with w=0", "[tuple][bdd]") {
     GIVEN("v <- vector(4, -4, 3)") {
         auto v = Tuple::vector(4, -4, 3);
-        THEN("v = tuple(4, -4, 3, 0") {
+        THEN("v = tuple(4, -4, 3, 0)") {
             CHECK(v == Tuple(4, -4, 3, 0));
         }
     }
@@ -109,10 +109,10 @@ SCENARIO("Subtracting two vectors", "[tuple][bdd]") {
 }
 
 SCENARIO("Subtracting a vector from the zero vector", "[tuple][bdd]") {
-    GIVEN("zero <- point(0, 0, 0)") {
-        auto zero = Tuple::point(0, 0, 0);
-        AND_GIVEN("v ← point(1, -2, 3)") {
-            auto v = Tuple::point(1, -2, 3);
+    GIVEN("zero <- vector(0, 0, 0)") {
+        auto zero = Tuple::vector(0, 0, 0);
+        AND_GIVEN("v ← vector(1, -2, 3)") {
+            auto v = Tuple::vector(1, -2, 3);
             THEN("zero - v = vector(-1, 2, -3)") {
                 auto result = zero - v;
                 CHECK(result == Tuple::vector(-1, 2, -3));
@@ -121,7 +121,6 @@ SCENARIO("Subtracting a vector from the zero vector", "[tuple][bdd]") {
     }
 }
 
-/*
 SCENARIO("Negating a tuple", "[tuple][bdd]") {
     GIVEN("a <- tuple(1, -2, 3, -4)") {
         Tuple a(1, -2, 3, -4);
@@ -130,7 +129,6 @@ SCENARIO("Negating a tuple", "[tuple][bdd]") {
         }
     }
 }
-*/
 
 SCENARIO("Multiplying a tuple by a scalar", "[tuple][bdd]") {
     GIVEN("a <- tuple(1, -2, 3, -4)") {
@@ -159,29 +157,15 @@ SCENARIO("Dividing a tuple by a scalar", "[tuple][bdd]") {
     }
 }
 
-SCENARIO("Computing the magnitude of vector(1, 0, 0)", "[tuple][bdd]") {
-    GIVEN("v <- vector(1, 0, 0)") {
-        auto v = Tuple::vector(1, 0, 0);
-        THEN("magnitude(v) = 1") {
-            CHECK(magnitude(v) == 1);
-        }
-    }
-}
-
-SCENARIO("Computing the magnitude of vector(0, 1, 0)", "[tuple][bdd]") {
-    GIVEN("v <- vector(0, 1, 0)") {
-        auto v = Tuple::vector(0, 1, 0);
-        THEN("magnitude(v) = 1") {
-            CHECK(magnitude(v) == 1);
-        }
-    }
-}
-
-SCENARIO("Computing the magnitude of vector(0, 0, 1)", "[tuple][bdd]") {
-    GIVEN("v <- vector(0, 0, 1)") {
-        auto v = Tuple::vector(0, 0, 1);
-        THEN("magnitude(v) = 1") {
-            CHECK(magnitude(v) == 1);
+SCENARIO("Computing the magnitude of unit vectors", "[tuple][bdd]") {
+    GIVEN("unit vectors along each axis") {
+        auto v1 = Tuple::vector(1, 0, 0);
+        auto v2 = Tuple::vector(0, 1, 0);
+        auto v3 = Tuple::vector(0, 0, 1);
+        THEN("each has magnitude 1") {
+            CHECK(magnitude(v1) == 1);
+            CHECK(magnitude(v2) == 1);
+            CHECK(magnitude(v3) == 1);
         }
     }
 }
@@ -216,7 +200,7 @@ SCENARIO("Normalizing vector(4, 0, 0) gives (1, 0, 0)", "[tuple][bdd]") {
 SCENARIO("Normalizing vector(1, 2, 3)", "[tuple][bdd]") {
     GIVEN("v <- vector(1, 2, 3)") {
         auto v = Tuple::vector(1, 2, 3);
-        THEN("normalize(v) = vector(sqrt(14), 2 * sqrt(14), 3 * sqrt(14)") {
+        THEN("normalize(v) = vector(1 / sqrt(14), 2 / sqrt(14), 3 / sqrt(14)") {
             auto result = normalize(v);
             CHECK(result.x_value == Approx(1 / std::sqrt(14)));
             CHECK(result.y_value == Approx(2 / std::sqrt(14)));
@@ -230,7 +214,7 @@ SCENARIO("The magnitude of a normalized vector", "[tuple][bdd]") {
     GIVEN("v <- vector(1, 2, 3)") {
         auto v = Tuple::vector(1, 2, 3);
         THEN("magnitude(normalize(v)) = 1") {
-            CHECK(magnitude(normalize(v)) == 1);
+            CHECK(magnitude(normalize(v)) == Approx(1));
         }
     }
 }
@@ -252,10 +236,10 @@ SCENARIO("The cross product of two vectors", "[tuple][bdd]") {
         auto a = Tuple::vector(1, 2, 3);
         AND_GIVEN("b <- vector(2, 3, 4)") {
             auto b = Tuple::vector(2, 3, 4);
-            THEN("cross(a, b) = vector(-1, 2, -1") {
+            THEN("cross(a, b) = vector(-1, 2, -1)") {
                 CHECK(cross(a, b) == Tuple::vector(-1, 2, -1));
             }
-            THEN("cross(b, a) = vector(1, -2, 1") {
+            THEN("cross(b, a) = vector(1, -2, 1)") {
                 CHECK(cross(b, a) == Tuple::vector(1, -2, 1));
             }
         }
