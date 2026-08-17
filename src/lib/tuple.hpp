@@ -1,16 +1,22 @@
 /*
-* Tuple.h
+ * tuple.hpp
  * A tuple represents an ordered list of numbers.
  * Abstraction for things like position, direction, and distance.
  *
  * Note: w = 1 is a point, w = 0 is a vector.
- *  * Adding a point (w=1) to a vector (w=0) results in a point (w=1 + 0 = 1)
- *  * Adding 2 vectors (w=0) results in a vector (w=0 + 0 = 0)
+ *  Adding a point (w=1) to a vector (w=0) results in a point (w=1 + 0 = 1)
+ *  Adding 2 vectors (w=0) results in a vector (w=0 + 0 = 0)
+ */
+
+/*
+ * Possible improvements:
+ * Add division by zero check in operator / and normalize
  */
 
 #pragma once
 
 #include <cmath>
+#include <ostream>
 
 namespace rtc {
     struct Tuple {
@@ -83,12 +89,48 @@ namespace rtc {
             };
         }
 
-        bool operator==(const Tuple &other) const {
+        [[nodiscard]] bool operator==(const Tuple &other) const {
             return
                     std::fabs(x_value - other.x_value) < EPSILON &&
                     std::fabs(y_value - other.y_value) < EPSILON &&
                     std::fabs(z_value - other.z_value) < EPSILON &&
                     std::fabs(w_value - other.w_value) < EPSILON;
+        }
+
+        [[nodiscard]] bool operator!=(const Tuple &other) const {
+            return !(*this == other);
+        }
+
+        Tuple &operator+=(const Tuple &other) {
+            x_value += other.x_value;
+            y_value += other.y_value;
+            z_value += other.z_value;
+            w_value += other.w_value;
+            return *this;
+        }
+
+        Tuple &operator-=(const Tuple &other) {
+            x_value -= other.x_value;
+            y_value -= other.y_value;
+            z_value -= other.z_value;
+            w_value -= other.w_value;
+            return *this;
+        }
+
+        Tuple &operator*=(double scalar) {
+            x_value *= scalar;
+            y_value *= scalar;
+            z_value *= scalar;
+            w_value *= scalar;
+            return *this;
+        }
+
+        Tuple &operator/=(double scalar) {
+            x_value /= scalar;
+            y_value /= scalar;
+            z_value /= scalar;
+            w_value /= scalar;
+            return *this;
         }
     };
 
@@ -121,5 +163,11 @@ namespace rtc {
         return Tuple::vector((tuple_a.y_value * tuple_b.z_value) - (tuple_a.z_value * tuple_b.y_value),
                              (tuple_a.z_value * tuple_b.x_value) - (tuple_a.x_value * tuple_b.z_value),
                              (tuple_a.x_value * tuple_b.y_value) - (tuple_a.y_value * tuple_b.x_value));
+    }
+
+    inline std::ostream &operator<<(std::ostream &os, const Tuple &tuple) {
+        os << "Tuple(" << tuple.x_value << ", " << tuple.y_value << ", "
+                << tuple.z_value << ", " << tuple.w_value << ")";
+        return os;
     }
 } // namespace rtc

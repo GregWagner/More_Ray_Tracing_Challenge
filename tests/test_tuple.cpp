@@ -1,5 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_approx.hpp>
+#include <sstream>
 
 #include "lib/tuple.hpp"
 
@@ -157,6 +158,60 @@ SCENARIO("Dividing a tuple by a scalar", "[tuple][bdd]") {
     }
 }
 
+SCENARIO("Compound assignment addition", "[tuple][bdd]") {
+    GIVEN("a1 <- tuple(3, -2, 5, 1)") {
+        Tuple a1(3, -2, 5, 1);
+        AND_GIVEN("a2 <- tuple(-2, 3, 1, 0)") {
+            Tuple a2(-2, 3, 1, 0);
+            WHEN("a1 += a2") {
+                a1 += a2;
+                THEN("a1 = tuple(1, 1, 6, 1)") {
+                    CHECK(a1 == Tuple(1, 1, 6, 1));
+                }
+            }
+        }
+    }
+}
+
+SCENARIO("Compound assignment subtraction", "[tuple][bdd]") {
+    GIVEN("v1 <- vector(3, 2, 1)") {
+        auto v1 = Tuple::vector(3, 2, 1);
+        AND_GIVEN("v2 <- vector(5, 6, 7)") {
+            auto v2 = Tuple::vector(5, 6, 7);
+            WHEN("v1 -= v2") {
+                v1 -= v2;
+                THEN("v1 = vector(-2, -4, -6)") {
+                    CHECK(v1 == Tuple::vector(-2, -4, -6));
+                }
+            }
+        }
+    }
+}
+
+SCENARIO("Compound assignment multiplication", "[tuple][bdd]") {
+    GIVEN("a <- tuple(1, -2, 3, -4)") {
+        Tuple a(1, -2, 3, -4);
+        WHEN("a *= 3.5") {
+            a *= 3.5;
+            THEN("a = tuple(3.5, -7, 10.5, -14)") {
+                CHECK(a == Tuple(3.5, -7, 10.5, -14));
+            }
+        }
+    }
+}
+
+SCENARIO("Compound assignment division", "[tuple][bdd]") {
+    GIVEN("a <- tuple(1, -2, 3, -4)") {
+        Tuple a(1, -2, 3, -4);
+        WHEN("a /= 2") {
+            a /= 2;
+            THEN("a = tuple(0.5, -1, 1.5, -2)") {
+                CHECK(a == Tuple(0.5, -1, 1.5, -2));
+            }
+        }
+    }
+}
+
 SCENARIO("Computing the magnitude of unit vectors", "[tuple][bdd]") {
     GIVEN("unit vectors along each axis") {
         auto v1 = Tuple::vector(1, 0, 0);
@@ -242,6 +297,36 @@ SCENARIO("The cross product of two vectors", "[tuple][bdd]") {
             THEN("cross(b, a) = vector(1, -2, 1)") {
                 CHECK(cross(b, a) == Tuple::vector(1, -2, 1));
             }
+        }
+    }
+}
+
+SCENARIO("Stream output of a tuple", "[tuple][bdd]") {
+    GIVEN("a tuple (1, -2, 3, -4)") {
+        Tuple a(1, -2, 3, -4);
+        WHEN("streamed to output") {
+            std::ostringstream oss;
+            oss << a;
+            THEN("it outputs the correct format") {
+                CHECK(oss.str() == "Tuple(1, -2, 3, -4)");
+            }
+        }
+    }
+}
+
+SCENARIO("Inequality operator", "[tuple][bdd]") {
+    GIVEN("two different tuples") {
+        Tuple a1(1, 2, 3, 4);
+        Tuple a2(1, 2, 3, 5);
+        THEN("they are not equal") {
+            CHECK(a1 != a2);
+        }
+    }
+    GIVEN("two identical tuples") {
+        Tuple a1(1, 2, 3, 4);
+        Tuple a2(1, 2, 3, 4);
+        THEN("they are equal") {
+            CHECK_FALSE(a1 != a2);
         }
     }
 }
