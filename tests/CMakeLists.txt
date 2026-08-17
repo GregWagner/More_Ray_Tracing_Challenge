@@ -9,7 +9,8 @@ FetchContent_MakeAvailable(Catch2)
 
 add_executable(unit_tests test_main.cpp
         test_tuple.cpp
-        test_color.cpp)
+        test_color.cpp
+        test_canvas.cpp)
 
 # Include src directory so tests can find PixelMath.hpp
 target_include_directories(unit_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
