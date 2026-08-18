@@ -6,6 +6,7 @@
 #include "lib/matrix.hpp"   // adjust include paths to your project
 #include "lib/tuple.hpp"    // if you have tuple
 using namespace rtc;
+
 using Catch::Approx;
 
 static constexpr double EPS = 1e-3;
