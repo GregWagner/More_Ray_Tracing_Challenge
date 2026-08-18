@@ -338,4 +338,3 @@ SCENARIO("An arbitrary view transformation", "[matrix][transform][view][bdd]") {
         }
     }
 }
-

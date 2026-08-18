@@ -9,10 +9,12 @@ using namespace rtc;
 SCENARIO("Creating a canvas", "[canvas][bdd]") {
     GIVEN("c <- canvas(10, 20)") {
         Canvas c(10, 20);
+
         THEN("c.width = 10 and c.height = 20") {
             CHECK(c.width() == 10);
             CHECK(c.height() == 20);
         }
+
         THEN("every pixel is black (0, 0, 0)") {
             Color black(0.0, 0.0, 0.0);
             bool all_black = true;
@@ -33,8 +35,10 @@ SCENARIO("Writing pixels to a canvas", "[canvas][bdd]") {
     GIVEN("c <- canvas(10, 20) and red <- color(1, 0, 0)") {
         Canvas c(10, 20);
         Color red(1.0, 0.0, 0.0);
+
         WHEN("write_pixel(c, 2, 3, red)") {
             c.write_pixel(2, 3, red);
+
             THEN("pixel_at(c, 2, 3) = red") {
                 CHECK(c.pixel_at(2, 3) == red);
             }
@@ -106,6 +110,7 @@ SCENARIO("Splitting long lines in PPM files", "[canvas][ppm][bdd]") {
     GIVEN("c <- canvas(10, 2)") {
         Canvas c(10, 2);
         Color c1(1.0, 0.8, 0.6);
+
         WHEN("every pixel of c is set to color(1, 0.8, 0.6) and converted to PPM") {
             for (int y = 0; y < c.height(); ++y) {
                 for (int x = 0; x < c.width(); ++x) {
@@ -113,6 +118,7 @@ SCENARIO("Splitting long lines in PPM files", "[canvas][ppm][bdd]") {
                 }
             }
             std::string ppm = canvas_to_ppm(c);
+
             THEN("lines 4-7 split correctly within 70 characters") {
                 std::istringstream stream(ppm);
                 std::string line;
@@ -123,6 +129,7 @@ SCENARIO("Splitting long lines in PPM files", "[canvas][ppm][bdd]") {
                 }
 
                 std::string line4, line5, line6, line7;
+
                 std::getline(stream, line4);
                 std::getline(stream, line5);
                 std::getline(stream, line6);
@@ -140,8 +147,10 @@ SCENARIO("Splitting long lines in PPM files", "[canvas][ppm][bdd]") {
 SCENARIO("PPM files are terminated by a newline character", "[canvas][ppm][bdd]") {
     GIVEN("c <- canvas(5, 3)") {
         Canvas c(5, 3);
+
         WHEN("ppm <- canvas_to_ppm(c)") {
             std::string ppm = canvas_to_ppm(c);
+
             THEN("ppm ends with a newline character") {
                 REQUIRE_FALSE(ppm.empty());
                 CHECK(ppm.back() == '\n');

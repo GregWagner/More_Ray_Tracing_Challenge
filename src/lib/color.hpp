@@ -23,27 +23,27 @@ namespace rtc {
         }
 
         [[nodiscard]] static Color rgb(double r, double g, double b) {
-            return Color(r, g, b);
+            return {r, g, b};
         }
 
         [[nodiscard]] Color operator+(const Color &other) const {
-            return Color(red + other.red, green + other.green, blue + other.blue);
+            return {red + other.red, green + other.green, blue + other.blue};
         }
 
         [[nodiscard]] Color operator-(const Color &other) const {
-            return Color(red - other.red, green - other.green, blue - other.blue);
+            return {red - other.red, green - other.green, blue - other.blue};
         }
 
         [[nodiscard]] Color operator*(double scalar) const {
-            return Color(red * scalar, green * scalar, blue * scalar);
+            return {red * scalar, green * scalar, blue * scalar};
         }
 
         [[nodiscard]] Color operator*(const Color &other) const {
-            return Color(red * other.red, green * other.green, blue * other.blue);
+            return {red * other.red, green * other.green, blue * other.blue};
         }
 
         [[nodiscard]] Color operator/(double scalar) const {
-            return Color(red / scalar, green / scalar, blue / scalar);
+            return {red / scalar, green / scalar, blue / scalar};
         }
 
         [[nodiscard]] bool operator==(const Color &other) const {

@@ -1,12 +1,12 @@
-#include <catch2/catch_test_macros.hpp>
+#include<catch2/catch_test_macros.hpp>
 #include <catch2/catch_approx.hpp>
 
 #include <cmath>
 
 #include "lib/matrix.hpp"   // adjust include paths to your project
 #include "lib/tuple.hpp"    // if you have tuple
-using namespace rtc;
 
+using namespace rtc;
 using Catch::Approx;
 
 static constexpr double EPS = 1e-3;
@@ -14,6 +14,7 @@ static constexpr double EPS = 1e-3;
 static void CHECK_MATRIX_EQ(const rtc::Matrix &a, const rtc::Matrix &b) {
     REQUIRE(a.rows() == b.rows());
     REQUIRE(a.cols() == b.cols());
+
     for (int r = 0; r < a.rows(); ++r) {
         for (int c = 0; c < a.cols(); ++c) {
             CAPTURE(r, c);
@@ -42,7 +43,11 @@ static rtc::Tuple makeTuple(double x, double y, double z, double w) {
     return Tuple(x, y, z, w);
 }
 
-SCENARIO("Constructing and inspecting a 4x4 matrix", "[matrix]") {
+SCENARIO(
+    "Constructing and inspecting a 4x4 matrix"
+    ,
+    "[matrix]"
+) {
     auto M = makeMatrix({
         {1, 2, 3, 4},
         {5.5, 6.5, 7.5, 8.5},
@@ -58,7 +63,11 @@ SCENARIO("Constructing and inspecting a 4x4 matrix", "[matrix]") {
     CHECK(M[3][2] == Approx(15.5).epsilon(EPS));
 }
 
-SCENARIO("A 2x2 matrix ought to be representable", "[matrix]") {
+SCENARIO(
+    "A 2x2 matrix ought to be representable"
+    ,
+    "[matrix]"
+) {
     auto M = makeMatrix({
         {-3, 5},
         {1, -2}
@@ -69,7 +78,11 @@ SCENARIO("A 2x2 matrix ought to be representable", "[matrix]") {
     CHECK(M[1][1] == Approx(-2).epsilon(EPS));
 }
 
-SCENARIO("A 3x3 matrix ought to be representable", "[matrix]") {
+SCENARIO(
+    "A 3x3 matrix ought to be representable"
+    ,
+    "[matrix]"
+) {
     auto M = makeMatrix({
         {-3, 5, 0},
         {1, -2, -7},
@@ -80,7 +93,11 @@ SCENARIO("A 3x3 matrix ought to be representable", "[matrix]") {
     CHECK(M[2][2] == Approx(1).epsilon(EPS));
 }
 
-SCENARIO("Matrix equality with identical matrices", "[matrix]") {
+SCENARIO(
+    "Matrix equality with identical matrices"
+    ,
+    "[matrix]"
+) {
     auto A = makeMatrix({
         {1, 2, 3, 4},
         {5, 6, 7, 8},
@@ -96,7 +113,11 @@ SCENARIO("Matrix equality with identical matrices", "[matrix]") {
     CHECK(A == B);
 }
 
-SCENARIO("Matrix equality with different matrices", "[matrix]") {
+SCENARIO(
+    "Matrix equality with different matrices"
+    ,
+    "[matrix]"
+) {
     auto A = makeMatrix({
         {1, 2, 3, 4},
         {5, 6, 7, 8},
@@ -112,7 +133,11 @@ SCENARIO("Matrix equality with different matrices", "[matrix]") {
     CHECK(A != B);
 }
 
-SCENARIO("Multiplying two matrices", "[matrix]") {
+SCENARIO(
+    "Multiplying two matrices"
+    ,
+    "[matrix]"
+) {
     auto A = makeMatrix({
         {1, 2, 3, 4},
         {5, 6, 7, 8},
@@ -135,7 +160,11 @@ SCENARIO("Multiplying two matrices", "[matrix]") {
     CHECK_MATRIX_EQ(result, expected);
 }
 
-SCENARIO("A matrix multiplied by a tuple", "[matrix]") {
+SCENARIO(
+    "A matrix multiplied by a tuple"
+    ,
+    "[matrix]"
+) {
     auto A = makeMatrix({
         {1, 2, 3, 4},
         {2, 4, 4, 2},
@@ -148,7 +177,11 @@ SCENARIO("A matrix multiplied by a tuple", "[matrix]") {
     CHECK(result == expected);
 }
 
-SCENARIO("Multiplying a matrix by the identity matrix", "[matrix]") {
+SCENARIO(
+    "Multiplying a matrix by the identity matrix"
+    ,
+    "[matrix]"
+) {
     auto A = makeMatrix({
         {0, 1, 2, 4},
         {1, 2, 4, 8},
@@ -160,14 +193,22 @@ SCENARIO("Multiplying a matrix by the identity matrix", "[matrix]") {
     CHECK_MATRIX_EQ(result, A);
 }
 
-SCENARIO("Multiplying the identity matrix by a tuple", "[matrix]") {
+SCENARIO(
+    "Multiplying the identity matrix by a tuple"
+    ,
+    "[matrix]"
+) {
     auto a = makeTuple(1, 2, 3, 4);
     auto I = identity_matrix(4);
     auto result = I * a;
     CHECK(result == a);
 }
 
-SCENARIO("Transposing a matrix", "[matrix]") {
+SCENARIO(
+    "Transposing a matrix"
+    ,
+    "[matrix]"
+) {
     auto A = makeMatrix({
         {0, 9, 3, 0},
         {9, 8, 0, 8},
@@ -184,13 +225,21 @@ SCENARIO("Transposing a matrix", "[matrix]") {
     CHECK_MATRIX_EQ(result, expected);
 }
 
-SCENARIO("Transposing the identity matrix", "[matrix]") {
+SCENARIO(
+    "Transposing the identity matrix"
+    ,
+    "[matrix]"
+) {
     auto I = identity_matrix(4);
     auto result = transpose(I);
     CHECK_MATRIX_EQ(result, I);
 }
 
-SCENARIO("Calculating the determinant of a 2x2 matrix", "[matrix][determinant]") {
+SCENARIO(
+    "Calculating the determinant of a 2x2 matrix"
+    ,
+    "[matrix][determinant]"
+) {
     auto A = makeMatrix({
         {1, 5},
         {-3, 2}
@@ -198,7 +247,11 @@ SCENARIO("Calculating the determinant of a 2x2 matrix", "[matrix][determinant]")
     CHECK(determinant(A) == Approx(17).epsilon(EPS));
 }
 
-SCENARIO("A submatrix of a 3x3 matrix is a 2x2 matrix", "[matrix]") {
+SCENARIO(
+    "A submatrix of a 3x3 matrix is a 2x2 matrix"
+    ,
+    "[matrix]"
+) {
     auto A = makeMatrix({
         {1, 5, 0},
         {-3, 2, 7},
@@ -212,7 +265,11 @@ SCENARIO("A submatrix of a 3x3 matrix is a 2x2 matrix", "[matrix]") {
     CHECK_MATRIX_EQ(result, expected);
 }
 
-SCENARIO("A submatrix of a 4x4 matrix is a 3x3 matrix", "[matrix]") {
+SCENARIO(
+    "A submatrix of a 4x4 matrix is a 3x3 matrix"
+    ,
+    "[matrix]"
+) {
     auto A = makeMatrix({
         {-6, 1, 1, 6},
         {-8, 5, 8, 6},
@@ -228,7 +285,11 @@ SCENARIO("A submatrix of a 4x4 matrix is a 3x3 matrix", "[matrix]") {
     CHECK_MATRIX_EQ(result, expected);
 }
 
-SCENARIO("Calculating a minor of a 3x3 matrix", "[matrix][determinant]") {
+SCENARIO(
+    "Calculating a minor of a 3x3 matrix"
+    ,
+    "[matrix][determinant]"
+) {
     auto A = makeMatrix({
         {3, 5, 0},
         {2, -1, -7},
@@ -239,7 +300,11 @@ SCENARIO("Calculating a minor of a 3x3 matrix", "[matrix][determinant]") {
     CHECK(minor(A, 1, 0) == Approx(25).epsilon(EPS));
 }
 
-SCENARIO("Calculating a cofactor of a 3x3 matrix", "[matrix][determinant]") {
+SCENARIO(
+    "Calculating a cofactor of a 3x3 matrix"
+    ,
+    "[matrix][determinant]"
+) {
     auto A = makeMatrix({
         {3, 5, 0},
         {2, -1, -7},
@@ -251,7 +316,11 @@ SCENARIO("Calculating a cofactor of a 3x3 matrix", "[matrix][determinant]") {
     CHECK(cofactor(A, 1, 0) == Approx(-25).epsilon(EPS));
 }
 
-SCENARIO("Calculating the determinant of a 3x3 matrix", "[matrix][determinant]") {
+SCENARIO(
+    "Calculating the determinant of a 3x3 matrix"
+    ,
+    "[matrix][determinant]"
+) {
     auto A = makeMatrix({
         {1, 2, 6},
         {-5, 8, -4},
@@ -264,7 +333,11 @@ SCENARIO("Calculating the determinant of a 3x3 matrix", "[matrix][determinant]")
     CHECK(determinant(A) == Approx(-196).epsilon(EPS));
 }
 
-SCENARIO("Calculating the determinant of a 4x4 matrix", "[matrix][determinant]") {
+SCENARIO(
+    "Calculating the determinant of a 4x4 matrix"
+    ,
+    "[matrix][determinant]"
+) {
     auto A = makeMatrix({
         {-2, -8, 3, 5},
         {-3, 1, 7, 3},
@@ -279,7 +352,11 @@ SCENARIO("Calculating the determinant of a 4x4 matrix", "[matrix][determinant]")
     CHECK(determinant(A) == Approx(-4071).epsilon(EPS));
 }
 
-SCENARIO("Testing an invertible matrix for invertibility", "[matrix]") {
+SCENARIO(
+    "Testing an invertible matrix for invertibility"
+    ,
+    "[matrix]"
+) {
     auto A = makeMatrix({
         {6, 4, 4, 4},
         {5, 5, 7, 6},
@@ -291,7 +368,11 @@ SCENARIO("Testing an invertible matrix for invertibility", "[matrix]") {
     CHECK(is_invertible(A)); // adjust name if needed
 }
 
-SCENARIO("Testing a noninvertible matrix for invertibility", "[matrix]") {
+SCENARIO(
+    "Testing a noninvertible matrix for invertibility"
+    ,
+    "[matrix]"
+) {
     auto A = makeMatrix({
         {-4, 2, -2, -3},
         {9, 6, 2, 6},
@@ -303,7 +384,11 @@ SCENARIO("Testing a noninvertible matrix for invertibility", "[matrix]") {
     CHECK_FALSE(is_invertible(A));
 }
 
-SCENARIO("Calculating the inverse of a matrix", "[matrix]") {
+SCENARIO(
+    "Calculating the inverse of a matrix"
+    ,
+    "[matrix]"
+) {
     auto A = makeMatrix({
         {-5, 2, 6, -8},
         {1, -5, 1, 8},
@@ -329,7 +414,11 @@ SCENARIO("Calculating the inverse of a matrix", "[matrix]") {
     CHECK_MATRIX_EQ(B, expected);
 }
 
-SCENARIO("Calculating the inverse of another matrix", "[matrix]") {
+SCENARIO(
+    "Calculating the inverse of another matrix"
+    ,
+    "[matrix]"
+) {
     auto A = makeMatrix({
         {8, -5, 9, 2},
         {7, 5, 6, 1},
@@ -349,7 +438,11 @@ SCENARIO("Calculating the inverse of another matrix", "[matrix]") {
     CHECK_MATRIX_EQ(result, expected);
 }
 
-SCENARIO("Calculating the inverse of a third matrix", "[matrix]") {
+SCENARIO(
+    "Calculating the inverse of a third matrix"
+    ,
+    "[matrix]"
+) {
     auto A = makeMatrix({
         {9, 3, 0, 9},
         {-5, -2, -6, -3},
@@ -369,7 +462,11 @@ SCENARIO("Calculating the inverse of a third matrix", "[matrix]") {
     CHECK_MATRIX_EQ(result, expected);
 }
 
-SCENARIO("Multiplying a product by its inverse", "[matrix]") {
+SCENARIO(
+    "Multiplying a product by its inverse"
+    ,
+    "[matrix]"
+) {
     auto A = makeMatrix({
         {3, -9, 7, 3},
         {3, -8, 2, -9},

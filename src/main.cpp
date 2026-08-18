@@ -60,6 +60,4 @@ int main() {
 
         DrawPixel(centerPixel.x, centerPixel.y, RED);
     }
-
-    return 0;
 }

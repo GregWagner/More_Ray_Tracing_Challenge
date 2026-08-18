@@ -4,12 +4,14 @@
 TEST_CASE("Center coordinate calculations", "[pixel_math]") {
     SECTION("Standard 800x450 resolution") {
         constexpr auto center = PixelApp::calculateCenter(800, 450);
+
         REQUIRE(center.x == 400);
         REQUIRE(center.y == 225);
     }
 
     SECTION("Odd dimensions round down towards zero") {
         constexpr auto center = PixelApp::calculateCenter(801, 451);
+       
         REQUIRE(center.x == 400);
         REQUIRE(center.y == 225);
     }
