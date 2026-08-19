@@ -1,6 +1,7 @@
 // matrix.hpp
 #pragma once
 
+#include <array>
 #include <vector>
 #include <cmath>
 #include <stdexcept>
@@ -23,8 +24,8 @@ namespace rtc {
             if (r_ <= 0 || c_ <= 0) throw std::invalid_argument("Matrix dimensions must be positive");
         }
 
-        int rows() const { return r_; }
-        int cols() const { return c_; }
+        int rows() const noexcept { return r_; }
+        int cols() const noexcept { return c_; }
 
         // (r,c) access
         double &operator()(int r, int c) {
@@ -62,11 +63,11 @@ namespace rtc {
         };
 
         RowProxy operator[](int r) {
-            return RowProxy(data_.data() + static_cast<size_t>(r * c_), c_);
+            return RowProxy(data_.data() + static_cast<size_t>(r) * static_cast<size_t>(c_), c_);
         }
 
         ConstRowProxy operator[](int r) const {
-            return ConstRowProxy(data_.data() + static_cast<size_t>(r * c_), c_);
+            return ConstRowProxy(data_.data() + static_cast<size_t>(r) * static_cast<size_t>(c_), c_);
         }
 
         bool operator==(const Matrix &o) const {
@@ -77,7 +78,7 @@ namespace rtc {
             return true;
         }
 
-        bool operator!=(const Matrix &o) const { return !(*this == o); }
+        bool operator!=(const Matrix &o) const noexcept { return !(*this == o); }
 
         // matrix * matrix
         Matrix operator*(const Matrix &rhs) const {
@@ -99,15 +100,15 @@ namespace rtc {
         Tuple operator*(const Tuple &t) const {
             // Your tests use 4x4 matrices with Tuple(x,y,z,w)
             if (r_ != 4 || c_ != 4) throw std::invalid_argument("Matrix*Tuple expects a 4x4 matrix");
-            const double v[4] = {t.x_value, t.y_value, t.z_value, t.w_value};
+            const std::array<double, 4> v{t.x_value, t.y_value, t.z_value, t.w_value};
 
-            double outv[4] = {0, 0, 0, 0};
+            std::array<double, 4> outv{0.0, 0.0, 0.0, 0.0};
             for (int row = 0; row < 4; ++row) {
                 double sum = 0.0;
                 for (int col = 0; col < 4; ++col) {
-                    sum += (*this)(row, col) * v[col];
+                    sum += (*this)(row, col) * v[static_cast<size_t>(col)];
                 }
-                outv[row] = sum;
+                outv[static_cast<size_t>(row)] = sum;
             }
             return Tuple{outv[0], outv[1], outv[2], outv[3]};
         }

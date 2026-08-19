@@ -17,6 +17,7 @@
 
 #include <cmath>
 #include <ostream>
+#include <stdexcept>
 
 namespace rtc {
     struct Tuple {
@@ -29,15 +30,15 @@ namespace rtc {
 
         Tuple() = default;
 
-        Tuple(double x_coord, double y_coord, double z_coord, double w_coord)
+        constexpr Tuple(double x_coord, double y_coord, double z_coord, double w_coord)
             : x_value{x_coord}, y_value{y_coord}, z_value{z_coord}, w_value{w_coord} {
         }
 
-        static Tuple point(double x_coord, double y_coord, double z_coord) {
+        static constexpr Tuple point(double x_coord, double y_coord, double z_coord) {
             return Tuple{x_coord, y_coord, z_coord, 1.0};
         }
 
-        static Tuple vector(double x_coord, double y_coord, double z_coord) {
+        static constexpr Tuple vector(double x_coord, double y_coord, double z_coord) {
             return Tuple{x_coord, y_coord, z_coord, 0.0};
         }
 
@@ -49,7 +50,7 @@ namespace rtc {
             return std::fabs(w_value) < EPSILON;
         }
 
-        Tuple operator+(const Tuple &other) const {
+        Tuple operator+(const Tuple &other) const noexcept {
             return Tuple{
                 x_value + other.x_value,
                 y_value + other.y_value,
@@ -58,7 +59,7 @@ namespace rtc {
             };
         }
 
-        Tuple operator-(const Tuple &other) const {
+        Tuple operator-(const Tuple &other) const noexcept {
             return Tuple{
                 x_value - other.x_value,
                 y_value - other.y_value,
@@ -67,11 +68,11 @@ namespace rtc {
             };
         }
 
-        Tuple operator-() const {
+        Tuple operator-() const noexcept {
             return Tuple{-x_value, -y_value, -z_value, -w_value};
         }
 
-        Tuple operator*(double scalar) const {
+        Tuple operator*(double scalar) const noexcept {
             return Tuple{
                 x_value * scalar,
                 y_value * scalar,
@@ -81,6 +82,9 @@ namespace rtc {
         }
 
         Tuple operator/(double scalar) const {
+            if (std::fabs(scalar) < EPSILON) {
+                throw std::invalid_argument("Division by zero");
+            }
             return Tuple{
                 x_value / scalar,
                 y_value / scalar,
@@ -97,11 +101,11 @@ namespace rtc {
                     std::fabs(w_value - other.w_value) < EPSILON;
         }
 
-        [[nodiscard]] bool operator!=(const Tuple &other) const {
+        [[nodiscard]] bool operator!=(const Tuple &other) const noexcept {
             return !(*this == other);
         }
 
-        Tuple &operator+=(const Tuple &other) {
+        Tuple &operator+=(const Tuple &other) noexcept {
             x_value += other.x_value;
             y_value += other.y_value;
             z_value += other.z_value;
@@ -109,7 +113,7 @@ namespace rtc {
             return *this;
         }
 
-        Tuple &operator-=(const Tuple &other) {
+        Tuple &operator-=(const Tuple &other) noexcept {
             x_value -= other.x_value;
             y_value -= other.y_value;
             z_value -= other.z_value;
@@ -117,7 +121,7 @@ namespace rtc {
             return *this;
         }
 
-        Tuple &operator*=(double scalar) {
+        Tuple &operator*=(double scalar) noexcept {
             x_value *= scalar;
             y_value *= scalar;
             z_value *= scalar;
@@ -134,7 +138,7 @@ namespace rtc {
         }
     };
 
-    inline double magnitude(const Tuple &tuple) {
+    inline double magnitude(const Tuple &tuple) noexcept {
         return std::sqrt(
             (tuple.x_value * tuple.x_value) +
             (tuple.y_value * tuple.y_value) +
@@ -144,6 +148,9 @@ namespace rtc {
 
     inline Tuple normalize(const Tuple &tuple) {
         const double mag = magnitude(tuple);
+        if (std::fabs(mag) < Tuple::EPSILON) {
+            throw std::invalid_argument("Cannot normalize zero vector");
+        }
         return Tuple{
             tuple.x_value / mag,
             tuple.y_value / mag,
@@ -152,14 +159,14 @@ namespace rtc {
         };
     }
 
-    inline double dot(const Tuple &tuple_a, const Tuple &tuple_b) {
+    inline double dot(const Tuple &tuple_a, const Tuple &tuple_b) noexcept {
         return (tuple_a.x_value * tuple_b.x_value) +
                (tuple_a.y_value * tuple_b.y_value) +
                (tuple_a.z_value * tuple_b.z_value) +
                (tuple_a.w_value * tuple_b.w_value);
     }
 
-    inline Tuple cross(const Tuple &tuple_a, const Tuple &tuple_b) {
+    inline Tuple cross(const Tuple &tuple_a, const Tuple &tuple_b) noexcept {
         return Tuple::vector((tuple_a.y_value * tuple_b.z_value) - (tuple_a.z_value * tuple_b.y_value),
                              (tuple_a.z_value * tuple_b.x_value) - (tuple_a.x_value * tuple_b.z_value),
                              (tuple_a.x_value * tuple_b.y_value) - (tuple_a.y_value * tuple_b.x_value));

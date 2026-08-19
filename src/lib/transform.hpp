@@ -4,28 +4,26 @@
 
 #include "lib/matrix.hpp"
 
-using namespace rtc;
-
 class Transform {
 public:
-    static Matrix translation(double x, double y, double z) {
-        Matrix m = identity_matrix(4);
+    static rtc::Matrix translation(double x, double y, double z) {
+        rtc::Matrix m = rtc::identity_matrix(4);
         m(0, 3) = x;
         m(1, 3) = y;
         m(2, 3) = z;
         return m;
     }
 
-    static Matrix scaling(double x, double y, double z) {
-        Matrix m = identity_matrix(4);
+    static rtc::Matrix scaling(double x, double y, double z) {
+        rtc::Matrix m = rtc::identity_matrix(4);
         m(0, 0) = x;
         m(1, 1) = y;
         m(2, 2) = z;
         return m;
     }
 
-    static Matrix rotation_x(double rad) {
-        Matrix m = identity_matrix(4);
+    static rtc::Matrix rotation_x(double rad) {
+        rtc::Matrix m = rtc::identity_matrix(4);
         m(1, 1) = std::cos(rad);
         m(1, 2) = -std::sin(rad);
         m(2, 1) = std::sin(rad);
@@ -33,8 +31,8 @@ public:
         return m;
     }
 
-    static Matrix rotation_y(double rad) {
-        Matrix m = identity_matrix(4);
+    static rtc::Matrix rotation_y(double rad) {
+        rtc::Matrix m = rtc::identity_matrix(4);
         m(0, 0) = std::cos(rad);
         m(0, 2) = std::sin(rad);
         m(2, 0) = -std::sin(rad);
@@ -42,8 +40,8 @@ public:
         return m;
     }
 
-    static Matrix rotation_z(double rad) {
-        Matrix m = identity_matrix(4);
+    static rtc::Matrix rotation_z(double rad) {
+        rtc::Matrix m = rtc::identity_matrix(4);
         m(0, 0) = std::cos(rad);
         m(0, 1) = -std::sin(rad);
         m(1, 0) = std::sin(rad);
@@ -51,8 +49,8 @@ public:
         return m;
     }
 
-    static Matrix shearing(double xy, double xz, double yx, double yz, double zx, double zy) {
-        Matrix m = identity_matrix(4);
+    static rtc::Matrix shearing(double xy, double xz, double yx, double yz, double zx, double zy) {
+        rtc::Matrix m = rtc::identity_matrix(4);
         m(0, 1) = xy;
         m(0, 2) = xz;
         m(1, 0) = yx;
@@ -63,8 +61,8 @@ public:
     }
 
 
-    static Matrix orientation(const Tuple &left, const Tuple &true_up, const Tuple &forward) {
-        Matrix m = identity_matrix(4);
+    static rtc::Matrix orientation(const rtc::Tuple &left, const rtc::Tuple &true_up, const rtc::Tuple &forward) {
+        rtc::Matrix m = rtc::identity_matrix(4);
         m(0, 0) = left.x_value;
         m(0, 1) = left.y_value;
         m(0, 2) = left.z_value;
@@ -78,29 +76,29 @@ public:
     }
 
     // Overload: computes orientation directly from look direction and up vector
-    static Matrix orientation(const Tuple &forward_dir, const Tuple &up_dir) {
-        Tuple forward = normalize(forward_dir);
-        Tuple left = cross(forward, normalize(up_dir));
-        Tuple true_up = cross(left, forward);
+    static rtc::Matrix orientation(const rtc::Tuple &forward_dir, const rtc::Tuple &up_dir) {
+        rtc::Tuple forward = rtc::normalize(forward_dir);
+        rtc::Tuple left = rtc::cross(forward, rtc::normalize(up_dir));
+        rtc::Tuple true_up = rtc::cross(left, forward);
         return orientation(left, true_up, forward);
     }
 
     // Refactored view_transform utilizing orientation()
-    static Matrix view_transform(const Tuple &from, const Tuple &to, const Tuple &up) {
-        Tuple forward = normalize(to - from);
-        Tuple left = cross(forward, normalize(up));
-        Tuple true_up = cross(left, forward);
+    static rtc::Matrix view_transform(const rtc::Tuple &from, const rtc::Tuple &to, const rtc::Tuple &up) {
+        rtc::Tuple forward = rtc::normalize(to - from);
+        rtc::Tuple left = rtc::cross(forward, rtc::normalize(up));
+        rtc::Tuple true_up = rtc::cross(left, forward);
 
         return orientation(left, true_up, forward) * translation(-from.x_value, -from.y_value, -from.z_value);
     }
 };
 
 // Free-function wrappers
-inline Matrix orientation(const Tuple &left, const Tuple &true_up, const Tuple &forward) {
+inline rtc::Matrix orientation(const rtc::Tuple &left, const rtc::Tuple &true_up, const rtc::Tuple &forward) {
     return Transform::orientation(left, true_up, forward);
 }
 
-inline Matrix orientation(const Tuple &forward_dir, const Tuple &up_dir) {
+inline rtc::Matrix orientation(const rtc::Tuple &forward_dir, const rtc::Tuple &up_dir) {
     return Transform::orientation(forward_dir, up_dir);
 }
 
@@ -108,30 +106,30 @@ inline Matrix orientation(const Tuple &forward_dir, const Tuple &up_dir) {
 // Free-function wrappers (if tests call translation(...) directly)
 // ============================================================================
 
-inline Matrix translation(double x, double y, double z) {
+inline rtc::Matrix translation(double x, double y, double z) {
     return Transform::translation(x, y, z);
 }
 
-inline Matrix scaling(double x, double y, double z) {
+inline rtc::Matrix scaling(double x, double y, double z) {
     return Transform::scaling(x, y, z);
 }
 
-inline Matrix rotation_x(double rad) {
+inline rtc::Matrix rotation_x(double rad) {
     return Transform::rotation_x(rad);
 }
 
-inline Matrix rotation_y(double rad) {
+inline rtc::Matrix rotation_y(double rad) {
     return Transform::rotation_y(rad);
 }
 
-inline Matrix rotation_z(double rad) {
+inline rtc::Matrix rotation_z(double rad) {
     return Transform::rotation_z(rad);
 }
 
-inline Matrix shearing(double xy, double xz, double yx, double yz, double zx, double zy) {
+inline rtc::Matrix shearing(double xy, double xz, double yx, double yz, double zx, double zy) {
     return Transform::shearing(xy, xz, yx, yz, zx, zy);
 }
 
-inline Matrix view_transform(const Tuple &from, const Tuple &to, const Tuple &up) {
+inline rtc::Matrix view_transform(const rtc::Tuple &from, const rtc::Tuple &to, const rtc::Tuple &up) {
     return Transform::view_transform(from, to, up);
 }
