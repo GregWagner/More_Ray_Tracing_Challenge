@@ -1,4 +1,4 @@
-# Ray Tracer Challenge (C++17)
+# Ray Tracer Challenge (C++20)
 
 Project for implementing the exercises from _The Ray Tracer Challenge_ using modern C++ and CMake.
 
