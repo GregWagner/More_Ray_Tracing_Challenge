@@ -9,20 +9,20 @@ namespace rtc {
         Tuple origin;
         Tuple direction;
 
-        Tuple position(double distance) const {
+        auto position(double distance) const -> Tuple {
             return origin + direction * distance;
         }
 
-        Ray transform(const Matrix &m) const {
+        auto transform(const Matrix &m) const -> Ray {
             return Ray{m * origin, m * direction};
         }
     };
 
-    inline Tuple position(const Ray &r, double distance) {
+    inline auto position(const Ray &r, double distance) -> Tuple {
         return r.position(distance);
     }
 
-    inline Ray transform(const Ray &r, const Matrix &m) {
+    inline auto transform(const Ray &r, const Matrix &m) -> Ray {
         return r.transform(m);
     }
 }

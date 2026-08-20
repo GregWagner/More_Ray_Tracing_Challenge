@@ -11,7 +11,7 @@ using Catch::Approx;
 
 static constexpr double EPS = 1e-3;
 
-static void CHECK_MATRIX_EQ(const rtc::Matrix &a, const rtc::Matrix &b) {
+static auto CHECK_MATRIX_EQ(const rtc::Matrix &a, const rtc::Matrix &b) -> void {
     REQUIRE(a.rows() == b.rows());
     REQUIRE(a.cols() == b.cols());
 
@@ -23,7 +23,7 @@ static void CHECK_MATRIX_EQ(const rtc::Matrix &a, const rtc::Matrix &b) {
     }
 }
 
-static rtc::Matrix makeMatrix(std::initializer_list<std::initializer_list<double> > vals) {
+static auto makeMatrix(std::initializer_list<std::initializer_list<double> > vals) -> rtc::Matrix {
     const int rows = static_cast<int>(vals.size());
     const int cols = static_cast<int>(vals.begin()->size());
     rtc::Matrix m(rows, cols);
@@ -39,7 +39,7 @@ static rtc::Matrix makeMatrix(std::initializer_list<std::initializer_list<double
     return m;
 }
 
-static rtc::Tuple makeTuple(double x, double y, double z, double w) {
+static auto makeTuple(double x, double y, double z, double w) -> rtc::Tuple {
     return Tuple(x, y, z, w);
 }
 

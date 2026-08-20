@@ -26,7 +26,7 @@ public:
     WindowManager(WindowManager &&) = delete;
     WindowManager &operator=(WindowManager &&) = delete;
 
-    [[nodiscard]] static bool shouldClose() noexcept {
+    [[nodiscard]] static auto shouldClose() noexcept -> bool {
         return WindowShouldClose();
     }
 };
@@ -48,7 +48,7 @@ public:
 };
 } // namespace
 
-int main() {
+auto main() -> int {
     const WindowManager window{screenWidth, screenHeight, windowTitle, targetFps};
 
     static_assert(PixelApp::isWithinBounds(centerPixel, screenWidth, screenHeight),

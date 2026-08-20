@@ -11,7 +11,7 @@
 namespace rtc {
     static constexpr double MATRIX_EPS = 1e-5;
 
-    inline bool approxEqual(double a, double b, double eps = MATRIX_EPS) {
+    inline auto approxEqual(double a, double b, double eps = MATRIX_EPS) -> bool {
         return std::fabs(a - b) <= eps;
     }
 
@@ -26,16 +26,16 @@ namespace rtc {
             }
         }
 
-        [[nodiscard]] int rows() const noexcept { return r_; }
-        [[nodiscard]] int cols() const noexcept { return c_; }
+        [[nodiscard]] auto rows() const noexcept -> int { return r_; }
+        [[nodiscard]] auto cols() const noexcept -> int { return c_; }
 
         // (r,c) access
-        double &operator()(int r, int c) {
+        auto operator()(int r, int c) -> double & {
             // r and c are expected non-negative in your tests
             return data_.at((static_cast<size_t>(r) * static_cast<size_t>(c_)) + static_cast<size_t>(c));
         }
 
-        double operator()(int r, int c) const {
+        auto operator()(int r, int c) const -> double {
             return data_.at((static_cast<size_t>(r) * static_cast<size_t>(c_)) + static_cast<size_t>(c));
         }
 
@@ -45,7 +45,7 @@ namespace rtc {
             RowProxy(double *p, int cols) : p_(p), cols_(cols) {
             }
 
-            double &operator[](int c) { return p_[c]; }
+            auto operator[](int c) -> double & { return p_[c]; }
 
         private:
             double *p_;
@@ -57,22 +57,22 @@ namespace rtc {
             ConstRowProxy(const double *p, int cols) : p_(p), cols_(cols) {
             }
 
-            const double &operator[](int c) const { return p_[c]; }
+            auto operator[](int c) const -> const double & { return p_[c]; }
 
         private:
             const double *p_;
             int cols_;
         };
 
-        RowProxy operator[](int r) {
+        auto operator[](int r) -> RowProxy {
             return {data_.data() + (static_cast<size_t>(r) * static_cast<size_t>(c_)), c_};
         }
 
-        ConstRowProxy operator[](int r) const {
+        auto operator[](int r) const -> ConstRowProxy {
             return {data_.data() + (static_cast<size_t>(r) * static_cast<size_t>(c_)), c_};
         }
 
-        bool operator==(const Matrix &o) const {
+        auto operator==(const Matrix &o) const -> bool {
             if (r_ != o.r_ || c_ != o.c_) {
                 return false;
             }
@@ -82,10 +82,10 @@ namespace rtc {
             return true;
         }
 
-        bool operator!=(const Matrix &o) const noexcept { return !(*this == o); }
+        auto operator!=(const Matrix &o) const noexcept -> bool { return !(*this == o); }
 
         // matrix * matrix
-        Matrix operator*(const Matrix &rhs) const {
+        auto operator*(const Matrix &rhs) const -> Matrix {
             if (c_ != rhs.r_) {
                 throw std::invalid_argument("Matrix multiplication dimension mismatch");
             }
@@ -103,7 +103,7 @@ namespace rtc {
         }
 
         // matrix * tuple
-        Tuple operator*(const Tuple &t) const {
+        auto operator*(const Tuple &t) const -> Tuple {
             // Your tests use 4x4 matrices with Tuple(x,y,z,w)
             if (r_ != 4 || c_ != 4) {
                 throw std::invalid_argument("Matrix*Tuple expects a 4x4 matrix");
@@ -129,7 +129,7 @@ namespace rtc {
 
     // ---- required free functions ----
 
-    inline Matrix identity_matrix(int n) {
+    inline auto identity_matrix(int n) -> Matrix {
         Matrix m(n, n);
         for (int i = 0; i < n; ++i) {
             m(i, i) = 1.0;
@@ -137,7 +137,7 @@ namespace rtc {
         return m;
     }
 
-    inline Matrix transpose(const Matrix &m) {
+    inline auto transpose(const Matrix &m) -> Matrix {
         Matrix out(m.cols(), m.rows());
         for (int r{}; r < m.rows(); ++r) {
             for (int c{}; c < m.cols(); ++c) {
@@ -147,7 +147,7 @@ namespace rtc {
         return out;
     }
 
-    inline Matrix submatrix(const Matrix &m, int remove_row, int remove_col) {
+    inline auto submatrix(const Matrix &m, int remove_row, int remove_col) -> Matrix {
         Matrix out(m.rows() - 1, m.cols() - 1);
         int orow{};
         for (int r{}; r < m.rows(); ++r) {
@@ -169,11 +169,11 @@ namespace rtc {
 
     inline double determinant(const Matrix &m);
 
-    inline double minor(const Matrix &m, int row, int col) {
+    inline auto minor(const Matrix &m, int row, int col) -> double {
         return determinant(submatrix(m, row, col));
     }
 
-    inline double cofactor(const Matrix &m, int row, int col) {
+    inline auto cofactor(const Matrix &m, int row, int col) -> double {
         const double mn = minor(m, row, col);
         if ((row + col) % 2 == 1) {
             return -mn;
@@ -181,7 +181,7 @@ namespace rtc {
         return mn;
     }
 
-    inline double determinant(const Matrix &m) {
+    inline auto determinant(const Matrix &m) -> double {
         if (m.rows() != m.cols()) {
             throw std::invalid_argument("Determinant requires a square matrix");
         }
@@ -199,11 +199,11 @@ namespace rtc {
         return det;
     }
 
-    inline bool is_invertible(const Matrix &m) {
+    inline auto is_invertible(const Matrix &m) -> bool {
         return !approxEqual(determinant(m), 0.0);
     }
 
-    inline Matrix inverse(const Matrix &m) {
+    inline auto inverse(const Matrix &m) -> Matrix {
         const double det = determinant(m);
         if (approxEqual(det, 0.0)) {
             throw std::domain_error("Matrix is not invertible");

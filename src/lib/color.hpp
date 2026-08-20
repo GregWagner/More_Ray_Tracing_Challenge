@@ -22,72 +22,72 @@ namespace rtc {
         constexpr Color(double r, double g, double b) : red(r), green(g), blue(b) {
         }
 
-        [[nodiscard]] static constexpr Color rgb(double r, double g, double b) {
+        [[nodiscard]] static constexpr auto rgb(double r, double g, double b) -> Color {
             return {r, g, b};
         }
 
-        [[nodiscard]] Color operator+(const Color &other) const noexcept {
+        [[nodiscard]] auto operator+(const Color &other) const noexcept -> Color {
             return {red + other.red, green + other.green, blue + other.blue};
         }
 
-        [[nodiscard]] Color operator-(const Color &other) const noexcept {
+        [[nodiscard]] auto operator-(const Color &other) const noexcept -> Color {
             return {red - other.red, green - other.green, blue - other.blue};
         }
 
-        [[nodiscard]] Color operator*(double scalar) const noexcept {
+        [[nodiscard]] auto operator*(double scalar) const noexcept -> Color {
             return {red * scalar, green * scalar, blue * scalar};
         }
 
-        [[nodiscard]] Color operator*(const Color &other) const noexcept {
+        [[nodiscard]] auto operator*(const Color &other) const noexcept -> Color {
             return {red * other.red, green * other.green, blue * other.blue};
         }
 
-        [[nodiscard]] Color operator/(double scalar) const {
+        [[nodiscard]] auto operator/(double scalar) const -> Color {
             if (scalar == 0.0) {
                 throw std::invalid_argument("Division by zero");
             }
             return {red / scalar, green / scalar, blue / scalar};
         }
 
-        [[nodiscard]] bool operator==(const Color &other) const {
+        [[nodiscard]] auto operator==(const Color &other) const -> bool {
             return std::fabs(red - other.red) < EPSILON &&
                    std::fabs(green - other.green) < EPSILON &&
                    std::fabs(blue - other.blue) < EPSILON;
         }
 
-        [[nodiscard]] bool operator!=(const Color &other) const noexcept {
+        [[nodiscard]] auto operator!=(const Color &other) const noexcept -> bool {
             return !(*this == other);
         }
 
-        Color &operator+=(const Color &other) noexcept {
+        auto operator+=(const Color &other) noexcept -> Color & {
             red += other.red;
             green += other.green;
             blue += other.blue;
             return *this;
         }
 
-        Color &operator-=(const Color &other) noexcept {
+        auto operator-=(const Color &other) noexcept -> Color & {
             red -= other.red;
             green -= other.green;
             blue -= other.blue;
             return *this;
         }
 
-        Color &operator*=(double scalar) noexcept {
+        auto operator*=(double scalar) noexcept -> Color & {
             red *= scalar;
             green *= scalar;
             blue *= scalar;
             return *this;
         }
 
-        Color &operator*=(const Color &other) noexcept {
+        auto operator*=(const Color &other) noexcept -> Color & {
             red *= other.red;
             green *= other.green;
             blue *= other.blue;
             return *this;
         }
 
-        Color &operator/=(double scalar) {
+        auto operator/=(double scalar) -> Color & {
             red /= scalar;
             green /= scalar;
             blue /= scalar;
@@ -95,7 +95,7 @@ namespace rtc {
         }
     };
 
-    inline std::ostream &operator<<(std::ostream &os, const Color &color) {
+    inline auto operator<<(std::ostream &os, const Color &color) -> std::ostream & {
         os << "Color(" << color.red << ", " << color.green << ", " << color.blue << ")";
         return os;
     }

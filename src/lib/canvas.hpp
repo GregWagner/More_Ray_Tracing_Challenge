@@ -24,15 +24,15 @@ namespace rtc {
             }
         }
 
-        [[nodiscard]] int width() const noexcept { return width_; }
-        [[nodiscard]] int height() const noexcept { return height_; }
+        [[nodiscard]] auto width() const noexcept -> int { return width_; }
+        [[nodiscard]] auto height() const noexcept -> int { return height_; }
 
-        [[nodiscard]] Color pixel_at(int x_value, int y_value) const {
+        [[nodiscard]] auto pixel_at(int x_value, int y_value) const -> Color {
             bounds_check(x_value, y_value);
             return pixels_[to_index(x_value, y_value)];
         }
 
-        void write_pixel(int x_value, int y_value, const Color &color) {
+        auto write_pixel(int x_value, int y_value, const Color &color) -> void {
             bounds_check(x_value, y_value);
             pixels_[to_index(x_value, y_value)] = color;
         }
@@ -42,18 +42,18 @@ namespace rtc {
         int height_;
         std::vector<Color> pixels_;
 
-        [[nodiscard]] std::size_t to_index(int x_value, int y_value) const noexcept {
+        [[nodiscard]] auto to_index(int x_value, int y_value) const noexcept -> std::size_t {
             return static_cast<std::size_t>((y_value * width_) + x_value);
         }
 
-        void bounds_check(int x_value, int y_value) const {
+        auto bounds_check(int x_value, int y_value) const -> void {
             if (x_value < 0 || x_value >= width_ || y_value < 0 || y_value >= height_) {
                 throw std::out_of_range("Pixel coordinates out of canvas bounds.");
             }
         }
     };
 
-    inline std::string canvas_to_ppm(const Canvas &c) {
+    inline auto canvas_to_ppm(const Canvas &c) -> std::string {
         std::ostringstream oss;
         oss << "P3\n"
                 << c.width() << " " << c.height() << "\n"
