@@ -37,7 +37,7 @@ jobs:
       - name: Configure CMake
         run: |
           cmake -B build \
-            -DCMAKE_BUILD_TYPE=Debug \
+            ${{ runner.os == 'Linux' && '-DCMAKE_BUILD_TYPE=Debug' || '' }} \
             -DENABLE_COVERAGE=${{ runner.os == 'Linux' && 'ON' || 'OFF' }}
 
       - name: Build Executables
