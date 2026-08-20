@@ -21,20 +21,22 @@ namespace rtc {
 
         Matrix(int r, int c)
             : r_(r), c_(c), data_(static_cast<size_t>(r) * static_cast<size_t>(c), 0.0) {
-            if (r_ <= 0 || c_ <= 0) throw std::invalid_argument("Matrix dimensions must be positive");
+            if (r_ <= 0 || c_ <= 0) {
+                throw std::invalid_argument("Matrix dimensions must be positive");
+            }
         }
 
-        int rows() const noexcept { return r_; }
-        int cols() const noexcept { return c_; }
+        [[nodiscard]] int rows() const noexcept { return r_; }
+        [[nodiscard]] int cols() const noexcept { return c_; }
 
         // (r,c) access
         double &operator()(int r, int c) {
             // r and c are expected non-negative in your tests
-            return data_.at(static_cast<size_t>(r) * static_cast<size_t>(c_) + static_cast<size_t>(c));
+            return data_.at((static_cast<size_t>(r) * static_cast<size_t>(c_)) + static_cast<size_t>(c));
         }
 
         double operator()(int r, int c) const {
-            return data_.at(static_cast<size_t>(r) * static_cast<size_t>(c_) + static_cast<size_t>(c));
+            return data_.at((static_cast<size_t>(r) * static_cast<size_t>(c_)) + static_cast<size_t>(c));
         }
 
         // m[r][c] access
@@ -63,15 +65,17 @@ namespace rtc {
         };
 
         RowProxy operator[](int r) {
-            return RowProxy(data_.data() + static_cast<size_t>(r) * static_cast<size_t>(c_), c_);
+            return {data_.data() + (static_cast<size_t>(r) * static_cast<size_t>(c_)), c_};
         }
 
         ConstRowProxy operator[](int r) const {
-            return ConstRowProxy(data_.data() + static_cast<size_t>(r) * static_cast<size_t>(c_), c_);
+            return {data_.data() + (static_cast<size_t>(r) * static_cast<size_t>(c_)), c_};
         }
 
         bool operator==(const Matrix &o) const {
-            if (r_ != o.r_ || c_ != o.c_) return false;
+            if (r_ != o.r_ || c_ != o.c_) {
+                return false;
+            }
             for (size_t i = 0; i < data_.size(); ++i) {
                 if (!approxEqual(data_[i], o.data_[i])) return false;
             }
@@ -82,7 +86,9 @@ namespace rtc {
 
         // matrix * matrix
         Matrix operator*(const Matrix &rhs) const {
-            if (c_ != rhs.r_) throw std::invalid_argument("Matrix multiplication dimension mismatch");
+            if (c_ != rhs.r_) {
+                throw std::invalid_argument("Matrix multiplication dimension mismatch");
+            }
             Matrix out(r_, rhs.c_);
             for (int r = 0; r < r_; ++r) {
                 for (int c = 0; c < rhs.c_; ++c) {
@@ -99,7 +105,9 @@ namespace rtc {
         // matrix * tuple
         Tuple operator*(const Tuple &t) const {
             // Your tests use 4x4 matrices with Tuple(x,y,z,w)
-            if (r_ != 4 || c_ != 4) throw std::invalid_argument("Matrix*Tuple expects a 4x4 matrix");
+            if (r_ != 4 || c_ != 4) {
+                throw std::invalid_argument("Matrix*Tuple expects a 4x4 matrix");
+            }
             const std::array<double, 4> v{t.x_value, t.y_value, t.z_value, t.w_value};
 
             std::array<double, 4> outv{0.0, 0.0, 0.0, 0.0};
@@ -114,8 +122,8 @@ namespace rtc {
         }
 
     private:
-        int r_ = 0;
-        int c_ = 0;
+        int r_{};
+        int c_{};
         std::vector<double> data_; // row-major
     };
 
@@ -123,26 +131,34 @@ namespace rtc {
 
     inline Matrix identity_matrix(int n) {
         Matrix m(n, n);
-        for (int i = 0; i < n; ++i) m(i, i) = 1.0;
+        for (int i = 0; i < n; ++i) {
+            m(i, i) = 1.0;
+        }
         return m;
     }
 
     inline Matrix transpose(const Matrix &m) {
         Matrix out(m.cols(), m.rows());
-        for (int r = 0; r < m.rows(); ++r)
-            for (int c = 0; c < m.cols(); ++c)
+        for (int r{}; r < m.rows(); ++r) {
+            for (int c{}; c < m.cols(); ++c) {
                 out(c, r) = m(r, c);
+            }
+        }
         return out;
     }
 
     inline Matrix submatrix(const Matrix &m, int remove_row, int remove_col) {
         Matrix out(m.rows() - 1, m.cols() - 1);
-        int orow = 0;
-        for (int r = 0; r < m.rows(); ++r) {
-            if (r == remove_row) continue;
-            int ocol = 0;
-            for (int c = 0; c < m.cols(); ++c) {
-                if (c == remove_col) continue;
+        int orow{};
+        for (int r{}; r < m.rows(); ++r) {
+            if (r == remove_row) {
+                continue;
+            }
+            int ocol{};
+            for (int c{}; c < m.cols(); ++c) {
+                if (c == remove_col) {
+                    continue;
+                }
                 out(orow, ocol) = m(r, c);
                 ++ocol;
             }
@@ -158,17 +174,21 @@ namespace rtc {
     }
 
     inline double cofactor(const Matrix &m, int row, int col) {
-        double mn = minor(m, row, col);
-        if ((row + col) % 2 == 1) return -mn;
+        const double mn = minor(m, row, col);
+        if ((row + col) % 2 == 1) {
+            return -mn;
+        }
         return mn;
     }
 
     inline double determinant(const Matrix &m) {
-        if (m.rows() != m.cols()) throw std::invalid_argument("Determinant requires a square matrix");
+        if (m.rows() != m.cols()) {
+            throw std::invalid_argument("Determinant requires a square matrix");
+        }
 
         const int n = m.rows();
         if (n == 2) {
-            return m(0, 0) * m(1, 1) - m(0, 1) * m(1, 0);
+            return (m(0, 0) * m(1, 1)) - (m(0, 1) * m(1, 0));
         }
 
         double det = 0.0;
@@ -185,15 +205,19 @@ namespace rtc {
 
     inline Matrix inverse(const Matrix &m) {
         const double det = determinant(m);
-        if (approxEqual(det, 0.0)) throw std::domain_error("Matrix is not invertible");
+        if (approxEqual(det, 0.0)) {
+            throw std::domain_error("Matrix is not invertible");
+        }
 
         const int n = m.rows();
         Matrix out(n, n);
 
         // out(r,c) = cofactor(m, c, r) / det  (transpose of cofactor matrix)
-        for (int r = 0; r < n; ++r)
-            for (int c = 0; c < n; ++c)
+        for (int r{}; r < n; ++r) {
+            for (int c{}; c < n; ++c) {
                 out(r, c) = cofactor(m, c, r) / det;
+            }
+        }
 
         return out;
     }
