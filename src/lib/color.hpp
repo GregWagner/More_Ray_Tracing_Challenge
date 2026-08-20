@@ -95,8 +95,5 @@ namespace rtc {
         }
     };
 
-    inline auto operator<<(std::ostream &os, const Color &color) -> std::ostream & {
-        os << "Color(" << color.red << ", " << color.green << ", " << color.blue << ")";
-        return os;
-    }
+    auto operator<<(std::ostream &os, const Color &color) -> std::ostream &;
 }

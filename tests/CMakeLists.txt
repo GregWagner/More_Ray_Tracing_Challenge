@@ -14,6 +14,11 @@ add_executable(unit_tests test_main.cpp
         test_matrix.cpp
         test_transforms.cpp
         test_rays.cpp
+        ../src/lib/tuple.cpp
+        ../src/lib/color.cpp
+        ../src/lib/matrix.cpp
+        ../src/lib/transform.cpp
+        ../src/lib/rays.cpp
 )
 
 # Include src directory so tests can find PixelMath.hpp
