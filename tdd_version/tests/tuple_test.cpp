@@ -230,3 +230,31 @@ TEST_CASE("The magnitude of a normalized vector", "tuple") {
 
     REQUIRE_THAT(length, WithinAbs(1, 1e-5));
 }
+
+TEST_CASE("The dot product of two tuples", "[tuple]") {
+    Tuple a = vector(1, 2, 3);
+    Tuple b = vector(2, 3, 4);
+
+    double result = dot(a, b);
+
+    REQUIRE_THAT(result, WithinAbs(20, 1e-5));
+}
+
+TEST_CASE("The cross product of two vectors", "[tuple]") {
+    Tuple a = vector(1, 2, 3);
+    Tuple b = vector(2, 3, 4);
+
+    Tuple result = cross(a, b);
+
+    REQUIRE_THAT(result.x, WithinAbs(-1, 1e-5));
+    REQUIRE_THAT(result.y, WithinAbs(2, 1e-5));
+    REQUIRE_THAT(result.z, WithinAbs(-1, 1e-5));
+    REQUIRE(result.is_vector());
+
+    result = cross(b, a);
+
+    REQUIRE_THAT(result.x, WithinAbs(1, 1e-5));
+    REQUIRE_THAT(result.y, WithinAbs(-2, 1e-5));
+    REQUIRE_THAT(result.z, WithinAbs(1, 1e-5));
+    REQUIRE(result.is_vector());
+}
