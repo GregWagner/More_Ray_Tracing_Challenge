@@ -34,6 +34,7 @@ namespace rtc {
         auto is_point() -> bool { return w == 1.0; }
         auto is_vector() -> bool { return w == 0.0; }
 
+        // operators
         Tuple operator+(Tuple other) {
             return Tuple(x + other.x, y + other.y, z + other.z, w + other.w);
         }
